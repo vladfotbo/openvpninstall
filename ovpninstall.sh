@@ -891,7 +891,7 @@ install_easyrsa() {
 	# Get easy-rsa
 	easy_rsa_url='https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.0/EasyRSA-3.2.0.tgz'
 	mkdir -p /etc/openvpn/server/easy-rsa/
-	{ wget -t 3 -T 30 -qO- "$easy_rsa_url" 2>/dev/null || curl -m 30 -sL "$easy_rsa_url" ; } | tar xz -C /etc/openvpn/server/easy-rsa/ --strip-components 1
+	{ wget -4 -t 3 -T 30 -qO- "$easy_rsa_url" 2>/dev/null || curl -m 30 -sL "$easy_rsa_url" ; } | tar xz -C /etc/openvpn/server/easy-rsa/ --strip-components 1
 	if [ ! -f /etc/openvpn/server/easy-rsa/easyrsa ]; then
 		exiterr "Failed to download EasyRSA from $easy_rsa_url."
 	fi
@@ -1063,7 +1063,7 @@ update_sysctl() {
 	base_url="https://github.com/hwdsl2/vpn-extras/releases/download/v1.0.0"
 	conf_url="$base_url/sysctl-ovpn-$os"
 	[ "$auto" != 0 ] && conf_url="${conf_url}-auto"
-	wget -t 3 -T 30 -q -O "$conf_opt" "$conf_url" 2>/dev/null \
+	wget -4 -t 3 -T 30 -q -O "$conf_opt" "$conf_url" 2>/dev/null \
 		|| curl -m 30 -fsL "$conf_url" -o "$conf_opt" 2>/dev/null \
 		|| { /bin/rm -f "$conf_opt"; touch "$conf_opt"; }
 	# Enable TCP BBR congestion control if kernel version >= 4.20
