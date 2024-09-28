@@ -1398,14 +1398,12 @@ if [ "$add_client" = 1 ]; then
 	show_header
 	echo
 	build_client_config
-	new_client
 	print_client_action added
 	exit 0
 fi
 
 if [ "$export_client" = 1 ]; then
 	show_header
-	new_client
 	print_client_action exported
 	exit 0
 fi
@@ -1496,7 +1494,6 @@ if [[ ! -e "$OVPN_CONF" ]]; then
 	update_selinux
 	create_client_common
 	start_openvpn_service
-	new_client
 	if [ "$auto" != 0 ] && check_dns_name "$server_addr"; then
 		show_dns_name_note "$server_addr"
 	fi
