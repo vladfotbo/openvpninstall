@@ -650,23 +650,6 @@ select_dns() {
 	fi
 }
 
-enter_first_client_name() {
-	if [ "$auto" = 0 ]; then
-		echo
-		echo "Enter a name for the first client:"
-		read -rp "Name [client]: " unsanitized_client
-		set_client_name
-		[[ -z "$client" ]] && client=client
-	else
-		if [ -n "$first_client_name" ]; then
-			unsanitized_client="$first_client_name"
-			set_client_name
-		else
-			client=client
-		fi
-	fi
-}
-
 show_setup_ready() {
 	if [ "$auto" = 0 ]; then
 		echo
@@ -1184,13 +1167,6 @@ enter_client_name() {
 	done
 }
 
-build_client_config() {
-	cd /etc/openvpn/server/easy-rsa/ || exit 1
-	(
-		set -x
-		./easyrsa --batch --days=3650 build-client-full "$client" nopass >/dev/null 2>&1
-	)
-}
 
 print_client_action() {
 	echo
@@ -1375,7 +1351,6 @@ check_args
 if [ "$add_client" = 1 ]; then
 	show_header
 	echo
-	build_client_config
 	print_client_action added
 	exit 0
 fi
@@ -1454,7 +1429,6 @@ if [[ ! -e "$OVPN_CONF" ]]; then
 	if [ "$auto" = 0 ]; then
 		select_dns
 	fi
-	enter_first_client_name
 	show_setup_ready
 	check_firewall
 	confirm_setup
@@ -1482,8 +1456,6 @@ else
 	case "$option" in
 		1)
 			enter_client_name
-			build_client_config
-			print_client_action added
 			exit 0
 		;;
 		2)
