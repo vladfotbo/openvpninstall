@@ -1025,29 +1025,7 @@ get_export_dir() {
 	fi
 }
 
-new_client() {
-	get_export_dir
-	# Generates the custom client.ovpn
-	{
-	cat /etc/openvpn/server/client-common.txt
-	echo "<ca>"
-	cat /etc/openvpn/server/easy-rsa/pki/ca.crt
-	echo "</ca>"
-	echo "<cert>"
-	sed -ne '/BEGIN CERTIFICATE/,$ p' /etc/openvpn/server/easy-rsa/pki/issued/"$client".crt
-	echo "</cert>"
-	echo "<key>"
-	cat /etc/openvpn/server/easy-rsa/pki/private/"$client".key
-	echo "</key>"
-	echo "<tls-crypt>"
-	sed -ne '/BEGIN OpenVPN Static key/,$ p' /etc/openvpn/server/tc.key
-	echo "</tls-crypt>"
-	} > "$export_dir$client".ovpn
-	if [ "$export_to_home_dir" = 1 ]; then
-		chown "$SUDO_USER:$SUDO_USER" "$export_dir$client".ovpn
-	fi
-	chmod 600 "$export_dir$client".ovpn
-}
+
 
 update_sysctl() {
 	mkdir -p /etc/sysctl.d
@@ -1505,14 +1483,12 @@ else
 		1)
 			enter_client_name
 			build_client_config
-			new_client
 			print_client_action added
 			exit 0
 		;;
 		2)
 			check_clients
 			select_client_to export
-			new_client
 			print_client_action exported
 			exit 0
 		;;
